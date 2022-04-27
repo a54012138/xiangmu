@@ -14,7 +14,7 @@
 						<v-card-text>
 							<v-form ref="loginRules" v-model="valid" lazy-validation>
 								<v-text-field
-									v-model="loginRuleForm.name"
+									v-model="loginRuleForm.username"
 									:counter="10"
 									label="Name"
 									prepend-icon="person"
@@ -94,7 +94,7 @@ export default {
 	methods: {
 		login() {
 				axios
-				.post("http://127.0.0.1:5000/login", qs.stringify(this.loginRuleForm))
+				.post("http://127.0.0.1:5000/login", JSON.stringify(this.loginRuleForm))
 				.then((res) => {
 					console.log(res);
 
@@ -105,8 +105,11 @@ export default {
 					// 跳转到主页
 					this.$router.push("/admin");
 				});
+		},
+		registered() {
+			this.$router.push("/registered");
 		}
-	}
+	},
 };
 </script>
 

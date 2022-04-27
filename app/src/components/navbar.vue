@@ -23,7 +23,7 @@
           </template>
           <v-list-item>
             <v-list-item-content>
-              <v-list-item-title>空气质量图</v-list-item-title>
+              <v-list-item-title @click="one()">空气质量图</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
 

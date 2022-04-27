@@ -6,29 +6,30 @@
                 <v-col cols="12" md="6">
                     <v-card>
                         <v-card-title>
-                            <h1 class="text-center blue--text text--accent-2 display-2">注册页面</h1>
+                            <h1 class="text-center blue--text text--accent-2 display-2">
+                                注册页面</h1>
                         </v-card-title>
                         <v-card-text>
+                            <v-form ref="loginRules" v-model="valid" lazy-validation>
                             <v-text-field
-								v-model="name"
-								:error-messages="nameErrors"
+								v-model="loginRuleForm.name"
 								:counter="10"
 								label="Name"
                                 prepend-icon="person"
 								required
-								@input="$v.name.$touch()"
-								@blur="$v.name.$touch()"
+                                :rules="loginRules.username"
+                                prop="username"
 							></v-text-field>
 							<v-text-field
-								v-model="password"
-								:error-messages="passwordErrors"
-								:counter="10"
-								label="password"
-                                prepend-icon="lock"
-								required
-								@input="$v.password.$touch()"
-								@blur="$v.password.$touch()"
+								v-model="loginRuleForm.password"
+									:counter="10"
+									label="password"
+									prepend-icon="lock"
+									required
+									:rules="loginRules.password"
+									prop="password"
 							></v-text-field>
+                            </v-form>
                         </v-card-text>
                         <v-card-actions>
                             <v-spacer></v-spacer>
@@ -47,48 +48,62 @@
 
 <script>
 import { validationMixin } from "vuelidate";
-import { required, maxLength, email } from "vuelidate/lib/validators";
+import { required, maxLength } from "vuelidate/lib/validators";
+import axios from "axios";
+import qs from "qs";
 
 export default {
-    mixins: [validationMixin],
-
+	mixins: [validationMixin],
 	validations: {
-		name: { required, maxLength: maxLength(10) },
+		username: { required, maxLength: maxLength(10) },
 		password: { required, maxLength: maxLength(10) }
 	},
 
-   data() {
-       return {
-           username:"",
-           password: "",
-       }
-    },
-    computed: {
-		nameErrors() {
-			const errors = [];
-			if (!this.$v.name.$dirty) return errors;
-			!this.$v.name.maxLength &&
-				errors.push("Name must be at most 10 characters long");
-			!this.$v.name.required && errors.push("Name is required.");
-			return errors;
+	data: () => ({
+		// 请求数据
+		loginRuleForm: {
+			username: "",
+			password: ""
 		},
-        passwordErrors() {
-			const errors = [];
-			if (!this.$v.password.$dirty) return errors;
-			!this.$v.name.maxLength &&
-				errors.push("Name must be at most 10 characters long");
-			!this.$v.name.required && errors.push("Name is required.");
-			return errors;
+		//表单验证
+		loginRules: {
+			username: [
+				(v) => !!v || "请写名字",
+				(v) => (v && v.length <= 10) || "名字长度需要少于10"
+			],
+			password: [
+				(v) => !!v || "请写密码",
+				(v) => (v && v.length <= 10) || "密码长度需要少于10"
+			]
+		},
+		
+	}),
+
+	computed: {
+		validate() {
+			loginRules.validate();
 		}
 	},
+	mounted() {
+		this.login();
+	},
+	methods: {
+		login() {
+				axios
+				.post("http://127.0.0.1:5000/registered", JSON.stringify(this.loginRuleForm))
+				.then((res) => {
+					console.log(res);
 
-	methods:{
-        login() {
-            let _this = this;
-            _this.$router.push("/login");
-        },
-    }
-}
+					if (res.data.code != 0 && res.data.code != 401) {
+						return this.$message.error(res.data.msg);
+					}
+
+					// 跳转到主页
+					this.$router.push("/login");
+				});
+		},
+	},
+};
 </script>
 
 <style>
