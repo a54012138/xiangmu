@@ -54,7 +54,7 @@
 import { validationMixin } from "vuelidate";
 import { required, maxLength } from "vuelidate/lib/validators";
 import axios from "axios";
-import qs from "qs";
+
 
 export default {
 	mixins: [validationMixin],
@@ -94,7 +94,12 @@ export default {
 	methods: {
 		login() {
 				axios
-				.post("http://127.0.0.1:5000/login", JSON.stringify(this.loginRuleForm))
+				.post("http://127.0.0.1:5000/login", JSON.stringify(this.loginRuleForm), {
+         		headers: {
+            		"content-type": "application/json",
+            		Accept: "application/json",
+          		},
+        		})
 				.then((res) => {
 					console.log(res);
 

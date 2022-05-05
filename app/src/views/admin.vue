@@ -1,10 +1,10 @@
 <template>
-    <vue-app>
+    <v-app>
         <Navbar/>
         <v-main>
             <router-view></router-view>  
         </v-main>
-    </vue-app>
+    </v-app>
 </template>
 
 <script>
