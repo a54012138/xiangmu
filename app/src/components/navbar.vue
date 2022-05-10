@@ -80,17 +80,7 @@ export default {
     return {
       drawer: true,
       ites: "",
-      desserts: [
-        {
-          id0: "1",
-          id1: "1",
-          id2: "1",
-          id3: "1",
-          id4: "1",
-          id5: "1",
-          id6: "1",
-        },
-      ],
+      desserts: [],
       headers: [
         {
           text: "小时",
@@ -141,13 +131,20 @@ export default {
         .then((res) => {
           const data1 = res.data.data.data1;
           const data14 = res.data.data.data14;
-          for (let i = 0; i < 25; i++) {
-            for (let j = 0; j < 8; j++) {
-              console.log(data1[i][j]);
-              this.desserts["id" + j] = data1[i][j];
-              this.$set(this.desserts, this.desserts.id0, data1[i][j]);
-            }
-          }
+          this.desserts.splice(0, this.desserts.length);
+          data1.forEach((element) => {
+            const item = {
+              id0: element[0],
+              id1: element[1],
+              id2: element[2],
+              id3: element[3],
+              id4: element[4],
+              id5: element[5],
+              id6: element[6],
+            };
+            this.desserts.push(item);
+          });
+
           return this.desserts;
         });
     },
